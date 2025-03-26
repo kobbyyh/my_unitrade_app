@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
+import 'splashScreen.dart'; // Import your SplashScreen
 
 void main() {
-    runApp(MyApp());
+    runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+    const MyApp({Key? key}) : super(key: key);
+
     @override
     Widget build(BuildContext context) {
         return MaterialApp(
-            home: Scaffold(
-                appBar: AppBar(
-                    title: Text('Simple Dart App'),
-                ),
-                body: Center(
-                    child: Text('Hello, World!'),
-                ),
-            ),
+            title: 'Your App Title', // Replace with your app's title
+            home: const SplashScreen(), // Use SplashScreen as the home screen
         );
     }
 }
