@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
-import 'splashScreen.dart'; // Import your SplashScreen
+import 'screens/splash_screen.dart';
 
 void main() {
-    runApp(const MyApp());
+    runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-    const MyApp({Key? key}) : super(key: key);
-
     @override
     Widget build(BuildContext context) {
         return MaterialApp(
-            title: 'Your App Title', // Replace with your app's title
-            home: const SplashScreen(), // Use SplashScreen as the home screen
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+                primaryColor: Color(0xFF004D40), // Teal background
+            ),
+            home: SplashScreen(), // Start with the Splash Screen
         );
     }
 }

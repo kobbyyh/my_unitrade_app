@@ -1,9 +1,10 @@
 name: Uni_Trade
 description: A new Flutter project.
 
-# flutter:
-#   assets:
-#     - assets/UniTrade_logo
+flutter:
+    uses-material-design: true
+    assets:
+      - assets/app_logo.png
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
@@ -25,6 +26,6 @@ dev_dependencies:
 
   
 
-flutter:
-  uses-material-design: true
+
+
 
