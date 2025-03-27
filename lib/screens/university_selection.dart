@@ -27,7 +27,7 @@ class _UniversitySelectionState extends State<UniversitySelection> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Select Your University"),
+        // title: Text("Select Your University"),
         backgroundColor: Color(0xFF004D40), // Teal color
       ),
       body: Center(

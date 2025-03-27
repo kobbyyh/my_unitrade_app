@@ -5,6 +5,9 @@ flutter:
     uses-material-design: true
     assets:
       - assets/app_logo.png
+      - assets/app_logo_white.png
+      - assets/tshirt.jpg
+      - assets/user-profile.jpg
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
