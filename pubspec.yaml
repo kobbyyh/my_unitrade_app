@@ -23,9 +23,16 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.9.2
 
-  
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/app_logo.png"
+  adaptive_icon_background: "d4d4d4"
+  adaptive_icon_foreground: "assets/app_logo.png"
 
 
-
-
+fonts:
+  -family: Blanka
+    - asset:fonts/Blanka.ttf

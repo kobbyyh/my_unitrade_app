@@ -1,5 +1,6 @@
+
 import 'package:flutter/material.dart';
-import 'screens/splash_screen.dart';
+import 'screens/university_selection.dart';  // Import the university selection screen
 
 void main() {
     runApp(MyApp());
@@ -11,9 +12,9 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
-                primaryColor: Color(0xFF004D40), // Teal background
+                primaryColor: Color(0xFF004D40), // Teal color
             ),
-            home: SplashScreen(), // Start with the Splash Screen
+            home: UniversitySelection(), // Start with university selection
         );
     }
 }
