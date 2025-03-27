@@ -1,6 +1,18 @@
 
 import 'package:flutter/material.dart';
-import 'screens/university_selection.dart';  // Import the university selection screen
+import 'screens/university_selection.dart';
+import 'screens/home_screen.dart';
+import 'screens/cart_screen.dart';
+import 'screens/wallet_page.dart';
+import 'screens/settings_page.dart';
+import 'screens/chat_page.dart';
+import 'screens/profile_settings.dart';
+import 'screens/privacy_and_security.dart';
+import 'screens/notifications.dart';
+import 'screens/get_help.dart';
+import 'screens/platform_fees.dart';
+
+
 
 void main() {
     runApp(MyApp());
