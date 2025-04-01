@@ -11,6 +11,9 @@ import 'screens/privacy_and_security.dart';
 import 'screens/notifications.dart';
 import 'screens/get_help.dart';
 import 'screens/platform_fees.dart';
+import 'screens/signup_seller.dart';
+import 'screens/login_screen.dart';
+import 'screens/login_seller.dart';
 
 
 
