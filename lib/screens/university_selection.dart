@@ -91,7 +91,7 @@ class _UniversitySelectionState extends State<UniversitySelection> {
                     style: TextStyle(
                       color: Colors.blue,
                       fontSize: 16,
-                      decoration: TextDecoration.underline,
+                      decoration: TextDecoration.none,
                     ),
                   ),
                 ),

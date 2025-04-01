@@ -30,7 +30,22 @@ class _LoginSellerScreenState extends State<LoginSellerScreen> {
                 Image.asset('assets/app_logo.png', width: 100, height: 100),
                 SizedBox(height: 20),
 
-                // Seller ID Input
+                // // University Email Input
+                // TextFormField(
+                //   controller: sellerIdController,
+                //   decoration: InputDecoration(
+                //     labelText: "University Email",
+                //     border: OutlineInputBorder(),
+                //   ),
+                //   validator: (value) {
+                //     if (value == null || value.isEmpty) {
+                //       return "Please enter your University Email";
+                //     }
+                //     return null;
+                //   },
+                // ),
+                // SizedBox(height: 20),
+
                 TextFormField(
                   controller: sellerIdController,
                   decoration: InputDecoration(

@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
           if (_selectedIndex == 0 )
             Container(
               height: 140,
-              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 30),
               decoration: BoxDecoration(
                 color: Color(0xFF004D40),
               ),
