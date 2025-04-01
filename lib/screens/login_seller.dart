@@ -46,6 +46,7 @@ class _LoginSellerScreenState extends State<LoginSellerScreen> {
                 // ),
                 // SizedBox(height: 20),
 
+
                 TextFormField(
                   controller: sellerIdController,
                   decoration: InputDecoration(
