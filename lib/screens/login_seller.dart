@@ -1,5 +1,114 @@
+// import 'package:flutter/material.dart';
+// import 'home_screen.dart'; // Import the home screen
+//
+// class LoginSellerScreen extends StatefulWidget {
+//   @override
+//   _LoginSellerScreenState createState() => _LoginSellerScreenState();
+// }
+//
+// class _LoginSellerScreenState extends State<LoginSellerScreen> {
+//   final TextEditingController sellerIdController = TextEditingController();
+//   final TextEditingController passwordController = TextEditingController();
+//   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         backgroundColor: Color(0xFF004D40),
+//       ),
+//       body: Center(
+//         child: SingleChildScrollView(
+//           padding: EdgeInsets.all(20),
+//           child: Form(
+//             key: _formKey,
+//             child: Column(
+//               mainAxisAlignment: MainAxisAlignment.center,
+//               crossAxisAlignment: CrossAxisAlignment.center,
+//               children: [
+//                 // App Logo
+//                 Image.asset('assets/app_logo.png', width: 100, height: 100),
+//                 SizedBox(height: 20),
+//
+//
+//                 TextFormField(
+//                   controller: sellerIdController,
+//                   decoration: InputDecoration(
+//                     labelText: "Seller ID",
+//                     border: OutlineInputBorder(),
+//                   ),
+//                   validator: (value) {
+//                     if (value == null || value.isEmpty) {
+//                       return "Please enter your Seller ID";
+//                     }
+//                     return null;
+//                   },
+//                 ),
+//                 SizedBox(height: 20),
+//
+//                 // Password Input
+//                 TextFormField(
+//                   controller: passwordController,
+//                   obscureText: true,
+//                   decoration: InputDecoration(
+//                     labelText: "Password",
+//                     border: OutlineInputBorder(),
+//                   ),
+//                   validator: (value) {
+//                     if (value == null || value.isEmpty) {
+//                       return "Please enter your password";
+//                     }
+//                     return null;
+//                   },
+//                 ),
+//                 SizedBox(height: 15),
+//
+//                 // Forgot Password Link
+//                 Align(
+//                   alignment: Alignment.centerRight,
+//                   child: GestureDetector(
+//                     onTap: () {
+//                       // Forgot password functionality (To be implemented)
+//                     },
+//                     child: Text(
+//                       "Forgot Password?",
+//                       style: TextStyle(color: Colors.blue, fontSize: 16),
+//                     ),
+//                   ),
+//                 ),
+//                 SizedBox(height: 30),
+//
+//                 // Login Button
+//                 ElevatedButton(
+//                   style: ElevatedButton.styleFrom(
+//                     backgroundColor: Color(0xFF004D40),
+//                     padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+//                   ),
+//                   onPressed: () {
+//                     if (_formKey.currentState!.validate()) {
+//                       // Navigate to Home Screen (Later change this to Seller Dashboard)
+//                       Navigator.pushReplacement(
+//                         context,
+//                         MaterialPageRoute(builder: (context) => HomeScreen()),
+//                       );
+//                     }
+//                   },
+//                   child: Text("Login", style: TextStyle(fontSize: 18, color: Colors.white)),
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+
+
 import 'package:flutter/material.dart';
-import 'home_screen.dart'; // Import the home screen
+import 'home_screen.dart';
+import 'login_screen.dart'; // For redirecting to Buyer login
 
 class LoginSellerScreen extends StatefulWidget {
   @override
@@ -14,39 +123,34 @@ class _LoginSellerScreenState extends State<LoginSellerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFD9D9D9),
       appBar: AppBar(
         backgroundColor: Color(0xFF004D40),
+        elevation: 0,
       ),
       body: Center(
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(20),
+          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 10),
           child: Form(
             key: _formKey,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // App Logo
                 Image.asset('assets/app_logo.png', width: 100, height: 100),
                 SizedBox(height: 20),
 
-                // // University Email Input
-                // TextFormField(
-                //   controller: sellerIdController,
-                //   decoration: InputDecoration(
-                //     labelText: "University Email",
-                //     border: OutlineInputBorder(),
-                //   ),
-                //   validator: (value) {
-                //     if (value == null || value.isEmpty) {
-                //       return "Please enter your University Email";
-                //     }
-                //     return null;
-                //   },
-                // ),
-                // SizedBox(height: 20),
+                // Title
+                Text(
+                  "Seller Login",
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF004D40),
+                  ),
+                ),
+                SizedBox(height: 30),
 
-
+                // Seller ID
                 TextFormField(
                   controller: sellerIdController,
                   decoration: InputDecoration(
@@ -62,7 +166,7 @@ class _LoginSellerScreenState extends State<LoginSellerScreen> {
                 ),
                 SizedBox(height: 20),
 
-                // Password Input
+                // Password
                 TextFormField(
                   controller: passwordController,
                   obscureText: true,
@@ -79,16 +183,16 @@ class _LoginSellerScreenState extends State<LoginSellerScreen> {
                 ),
                 SizedBox(height: 15),
 
-                // Forgot Password Link
+                // Forgot Password (optional for future)
                 Align(
                   alignment: Alignment.centerRight,
                   child: GestureDetector(
                     onTap: () {
-                      // Forgot password functionality (To be implemented)
+                      // Implement forgot password if needed
                     },
                     child: Text(
                       "Forgot Password?",
-                      style: TextStyle(color: Colors.blue, fontSize: 16),
+                      style: TextStyle(color: Colors.blue, fontSize: 14),
                     ),
                   ),
                 ),
@@ -102,7 +206,7 @@ class _LoginSellerScreenState extends State<LoginSellerScreen> {
                   ),
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      // Navigate to Home Screen (Later change this to Seller Dashboard)
+                      // Navigate to Seller Dashboard (replace HomeScreen later)
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) => HomeScreen()),
@@ -110,6 +214,21 @@ class _LoginSellerScreenState extends State<LoginSellerScreen> {
                     }
                   },
                   child: Text("Login", style: TextStyle(fontSize: 18, color: Colors.white)),
+                ),
+                SizedBox(height: 30),
+
+                // Not a seller? Login as buyer
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginScreen()),
+                    );
+                  },
+                  child: Text(
+                    "Not a seller? Login as Buyer",
+                    style: TextStyle(color: Colors.blue, fontSize: 16),
+                  ),
                 ),
               ],
             ),

@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "619229942843",
+    "project_id": "unitrade-d74e9",
+    "storage_bucket": "unitrade-d74e9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:619229942843:android:3b1fb17cd1d1740c04f81e",
+        "android_client_info": {
+          "package_name": "com.example.flutter_application_1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "619229942843-bi9qpte14fq1fchb93d4rn5foc9jt6lg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCuGoUiJf1u9cLrkqU8qhLVCQUHDhCLdjk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "619229942843-bi9qpte14fq1fchb93d4rn5foc9jt6lg.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "619229942843-50sl1gko7vefi8uun1bck1pvq698gnb6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.flutterApplication1"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
