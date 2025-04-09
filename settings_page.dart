@@ -1,118 +1,14 @@
-//
-// import 'package:flutter/material.dart';
-// import 'profile_settings.dart';
-// import 'privacy_and_security.dart';
-// import 'notifications.dart';
-// import 'get_help.dart'; // Import GetHelpSection
-// import 'platform_fees.dart';
-//
-// class SettingsScreen extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: Color(0xD9D9D9),
-//       body: Column(
-//         crossAxisAlignment: CrossAxisAlignment.center,
-//         children: [
-//           SizedBox(height: 70),
-//           Center(
-//             child: Image.asset(
-//               'assets/app_logo_white.png',
-//               width: 100,
-//               height: 100,
-//             ),
-//           ),
-//           SizedBox(height: 40),
-//           Expanded(
-//             child: ListView(
-//               padding: EdgeInsets.symmetric(horizontal: 20),
-//               children: [
-//                 settingsItem(
-//                   context,
-//                   Icons.person,
-//                   "Profile settings",
-//                   Colors.blue,
-//                   ProfileSettingsScreen(),
-//                 ),
-//                 settingsItem(
-//                   context,
-//                   Icons.lock,
-//                   "Privacy and Security",
-//                   Colors.red,
-//                   PrivacyAndSecurityScreen(),
-//                 ),
-//                 settingsItem(
-//                   context,
-//                   Icons.notifications,
-//                   "Notifications",
-//                   Colors.yellow,
-//                   NotificationsScreen(),
-//                 ),
-//
-//
-//                 settingsItem(
-//                   context,
-//                   Icons.attach_money,
-//                   "Platform Fees & Commission",
-//                   Colors.purple,
-//                   PlatformFeesScreen(),
-//                 ),
-//                 settingsItem(
-//                   context,
-//                   Icons.store,
-//                   "Login As A Seller",
-//                   Colors.brown,
-//                   null,
-//                 ),
-//                 settingsItem(
-//                   context,
-//                   Icons.exit_to_app,
-//                   "Logout",
-//                   Colors.orange,
-//                   null,
-//                 ),
-//
-//                 // Embed GetHelpSection directly
-//                 GetHelpSection(),
-//               ],
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-//
-//   // Reusable Widget for Settings Items
-//   Widget settingsItem(BuildContext context, IconData icon, String title, Color iconColor, Widget? page) {
-//     return Padding(
-//       padding: const EdgeInsets.symmetric(vertical: 10),
-//       child: ListTile(
-//         leading: Icon(icon, color: iconColor),
-//         title: Text(
-//           title,
-//           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-//         ),
-//         onTap: page != null
-//             ? () {
-//           Navigator.push(
-//             context,
-//             MaterialPageRoute(builder: (context) => page),
-//           );
-//         }
-//             : null, // If no page assigned, do nothing
-//       ),
-//     );
-//   }
-// }
 
 
+import 'package:UniTrade/screens/get_help.dart';
+import 'package:UniTrade/screens/notifications.dart';
+import 'package:UniTrade/screens/platform_fees.dart';
+import 'package:UniTrade/screens/privacy_and_security.dart';
+import 'package:UniTrade/screens/profile_settings.dart';
+import 'package:UniTrade/screens/signup_seller.dart';
 import 'package:flutter/material.dart';
-import 'profile_settings.dart';
-import 'privacy_and_security.dart';
-import 'notifications.dart';
-import 'get_help.dart'; // Import GetHelpSection
-import 'platform_fees.dart';
-import 'signup_seller.dart'; // Import Seller Signup Screen
+import 'package:firebase_auth/firebase_auth.dart'; // Import Firebase Auth
+import 'university_selection.dart'; // Import University Selection screen
 
 class SettingsScreen extends StatefulWidget {
   @override
@@ -121,6 +17,41 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   bool isSeller = false; // Temporary variable to simulate seller status
+
+  // Logout method
+  Future<void> _logout(BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.signOut(); // Sign out from Firebase
+      // Navigate to the University Selection Screen (to provide security)
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => UniversitySelection()),
+            // UniversitySelectionScreen()),
+      );
+    } catch (e) {
+      // Handle errors if needed
+      _showMessage(context, 'Error during logout: ${e.toString()}');
+    }
+  }
+
+  // Method to show messages (in case of errors)
+  void _showMessage(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Notice'),
+        content: Text(message),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+            child: Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +63,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           SizedBox(height: 70),
           Center(
             child: Image.asset(
-              'assets/app_logo_white.png',
+              'assets/app_logo.png',
               width: 100,
               height: 100,
             ),
@@ -168,7 +99,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   },
                 ),
 
-                settingsItem(context, Icons.exit_to_app, "Logout", Colors.orange, null),
+                // 🔹 Logout Button
+                ListTile(
+                  leading: Icon(Icons.exit_to_app, color: Colors.orange),
+                  title: Text("Logout", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                  onTap: () => _logout(context), // Call logout method here
+                ),
 
                 // Embed GetHelpSection directly
                 GetHelpSection(),

@@ -1,9 +1,13 @@
 
-import 'package:Uni_Trade/screens/cart_screen.dart';
-import 'package:Uni_Trade/screens/chat_page.dart';
-import 'package:Uni_Trade/screens/settings_page.dart';
-import 'package:Uni_Trade/screens/wallet_page.dart';
+import 'package:UniTrade/screens/settings_page.dart';
+import 'package:UniTrade/screens/wallet_page.dart';
+// import 'package:Uni_Trade/screens/cart_screen.dart';
+// import 'package:Uni_Trade/screens/chat_page.dart';
+
 import 'package:flutter/material.dart';
+
+import 'cart_screen.dart' show CartScreen;
+import 'chat_page.dart' show MessagesScreen;
 
 class HomeScreen extends StatefulWidget {
   @override
