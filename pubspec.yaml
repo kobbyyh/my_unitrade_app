@@ -1,4 +1,4 @@
-name: Uni_Trade
+name: UniTrade
 description: A new Flutter project.
 
 flutter:
@@ -8,6 +8,8 @@ flutter:
       - assets/app_logo_white.png
       - assets/tshirt.jpg
       - assets/user-profile.jpg
+      - assets/book.jpg
+      - assets/sneakers.jpg
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
@@ -20,20 +22,33 @@ dependencies:
   flutter:
     sdk: flutter
   image_picker: ^1.0.7
+  shared_preferences: ^2.2.2
 
   english_words: ^4.0.0
   provider: ^6.1.2
+  firebase_core: ^2.25.4
+  firebase_auth: ^4.17.9
+  cloud_firestore: ^4.17.5
+  firebase_storage: ^11.7.7
+  uuid: ^4.0.0
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_launcher_icons: ^0.9.2
+  flutter_launcher_icons: "^0.14.3"
 
-flutter_icons:
-  android: true
+flutter_launcher_icons:
+  android: "launcher_icon"
   ios: true
   image_path: "assets/app_logo.png"
+#  flutter_launcher_icons: ^0.9.2
+#
+#flutter_icons:
+#  android: true
+#  ios: true
+#  image_path: "assets/app_logo_white.png"
   adaptive_icon_background: "d4d4d4"
   adaptive_icon_foreground: "assets/app_logo.png"
 
