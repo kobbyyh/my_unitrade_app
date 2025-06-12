@@ -1,8 +1,8 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../screens/login_screen.dart';
-import '../screens/signup_screen.dart';
+import 'signup_screen.dart';
+import 'login_screen.dart';
 
 class UniversitySelection extends StatefulWidget {
   @override
@@ -35,7 +35,7 @@ class _UniversitySelectionState extends State<UniversitySelection> {
       }
 
       setState(() {
-        universities = snapshot.docs.map((doc) => doc['name'] as String).toList();
+        universities = snapshot.docs.map((doc) => doc.id).toList();
         isLoading = false;
       });
     } catch (e) {
@@ -152,9 +152,9 @@ class _UniversitySelectionState extends State<UniversitySelection> {
                     if (_formKey.currentState!.validate()) {
                       Navigator.push(
                         context,
-                        // MaterialPageRoute(builder: (context) => SignupScreen()),
-                        MaterialPageRoute(builder: (context) => SignupScreen(selectedUniversity: selectedUniversity!)),
-
+                        MaterialPageRoute(
+                          builder: (context) => SignupScreen(selectedUniversity: selectedUniversity!),
+                        ),
                       );
                     }
                   },

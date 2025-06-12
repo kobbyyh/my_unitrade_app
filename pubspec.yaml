@@ -6,10 +6,9 @@ flutter:
     assets:
       - assets/app_logo.png
       - assets/app_logo_white.png
-      - assets/tshirt.jpg
       - assets/user-profile.jpg
-      - assets/book.jpg
-      - assets/sneakers.jpg
+      - assets/app_logo_text1.png
+
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
@@ -31,6 +30,9 @@ dependencies:
   cloud_firestore: ^4.17.5
   firebase_storage: ^11.7.7
   uuid: ^4.0.0
+  
+  lottie: ^3.1.0
+
 
 
 dev_dependencies:

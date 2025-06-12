@@ -1,11 +1,20 @@
 
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class ChatScreen extends StatefulWidget {
-  final String name;
-  final String image;
+class ChatScreen extends StatefulWidget { // This is the ChatScreen class
+  final String chatRoomId;
+  final String otherUserId;
+  final String otherUserName;
+  final String otherUserImage;
 
-  ChatScreen({required this.name, required this.image});
+  ChatScreen({
+    required this.chatRoomId,
+    required this.otherUserId,
+    required this.otherUserName,
+    required this.otherUserImage,
+  });
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -13,115 +22,174 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _messageController = TextEditingController();
-  List<Map<String, String>> messages = [
-    {"text": "Hello, is this still available?", "isSender": "false"},
-    {"text": "Yes, it is!", "isSender": "true"},
-    {"text": "Great! I'll take it.", "isSender": "false"},
-    {"text": "Okay! Let's proceed with payment.", "isSender": "true"},
-  ];
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  void sendMessage() {
-    if (_messageController.text.trim().isNotEmpty) {
-      setState(() {
-        messages.add({"text": _messageController.text, "isSender": "true"});
-        _messageController.clear();
+  User? _currentUser;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentUser = _auth.currentUser;
+    if (_currentUser == null) {
+      print("Error: No current user in ChatScreen.");
+    }
+  }
+
+  Future<void> _sendMessage() async {
+    if (_messageController.text.trim().isEmpty || _currentUser == null) {
+      return;
+    }
+
+    String messageText = _messageController.text.trim();
+    _messageController.clear();
+
+    try {
+      // Add the message to the subcollection
+      await _firestore
+          .collection('chats')
+          .doc(widget.chatRoomId)
+          .collection('messages')
+          .add({
+        'senderId': _currentUser!.uid,
+        'receiverId': widget.otherUserId,
+        'messageText': messageText,
+        'timestamp': FieldValue.serverTimestamp(),
       });
+
+      // Update/create the chat room metadata in the main 'chats' collection
+      // This is crucial for the MessagesScreen (inbox) to display the chat
+      await _firestore.collection('chats').doc(widget.chatRoomId).set(
+        {
+          'lastMessageText': messageText,
+          'lastMessageTimestamp': FieldValue.serverTimestamp(),
+          'participants': [_currentUser!.uid, widget.otherUserId], // Ensure both UIDs are here
+          // You could add 'productId' and 'productName' here too if needed for chat context
+        },
+        SetOptions(merge: true), // Use merge to avoid overwriting existing fields
+      );
+
+      print("Message sent and chat metadata updated for chatRoomId: ${widget.chatRoomId}");
+    } catch (e) {
+      print("Error sending message or updating chat metadata: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to send message: ${e.toString()}')),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(0, 77, 64, 1),
-      body: SafeArea( // ✅ Wrap Column in SafeArea
-        child: Column(
+      appBar: AppBar(
+        backgroundColor: const Color.fromRGBO(0, 77, 64, 1),
+        title: Row(
           children: [
-            // Header
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 15.0),
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: Icon(Icons.arrow_back, color: Colors.white),
-                  ),
-                  SizedBox(width: 10),
-                  CircleAvatar(
-                    backgroundImage: AssetImage(widget.image),
-                    radius: 22,
-                  ),
-                  SizedBox(width: 10),
-                  Text(widget.name, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
-                  Spacer(),
-                  Icon(Icons.call, color: Colors.white),
-                ],
-              ),
+            CircleAvatar(
+              backgroundImage: widget.otherUserImage.startsWith('http')
+                  ? NetworkImage(widget.otherUserImage) as ImageProvider
+                  : AssetImage(widget.otherUserImage),
+              radius: 18,
             ),
-
-            // Messages
-            Expanded(
-              child: ListView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 15),
-                itemCount: messages.length,
-                itemBuilder: (context, index) {
-                  bool isSender = messages[index]["isSender"] == "true";
-                  return Align(
-                    alignment: isSender ? Alignment.centerRight : Alignment.centerLeft,
-                    child: Container(
-                      margin: EdgeInsets.symmetric(vertical: 5),
-                      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                      decoration: BoxDecoration(
-                        color: isSender ? Colors.red : Colors.white,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(15),
-                          topRight: Radius.circular(15),
-                          bottomLeft: isSender ? Radius.circular(15) : Radius.zero,
-                          bottomRight: isSender ? Radius.zero : Radius.circular(15),
-                        ),
-                      ),
-                      child: Text(messages[index]["text"]!,
-                          style: TextStyle(color: isSender ? Colors.white : Colors.black, fontSize: 14)),
-                    ),
-                  );
-                },
-              ),
-            ),
-
-            // Input Box
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Row(
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.attach_file, color: Colors.white),
-                    onPressed: () {},
-                  ),
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: TextField(
-                        controller: _messageController,
-                        decoration: InputDecoration(
-                          hintText: "Type here",
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                        ),
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.send, color: Colors.white),
-                    onPressed: sendMessage,
-                  ),
-                ],
-              ),
+            const SizedBox(width: 10),
+            Text(
+              widget.otherUserName,
+              style: const TextStyle(color: Colors.white, fontSize: 20),
             ),
           ],
         ),
+        iconTheme: const IconThemeData(color: Colors.white),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: _firestore
+                  .collection('chats')
+                  .doc(widget.chatRoomId)
+                  .collection('messages')
+                  .orderBy('timestamp', descending: false)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasError) {
+                  print("Error fetching messages: ${snapshot.error}");
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                }
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return const Center(child: Text('Say hello!'));
+                }
+                return ListView.builder(
+                  reverse: false,
+                  padding: const EdgeInsets.all(8.0),
+                  itemCount: snapshot.data!.docs.length,
+                  itemBuilder: (context, index) {
+                    DocumentSnapshot messageDoc = snapshot.data!.docs[index];
+                    Map<String, dynamic> messageData = messageDoc.data() as Map<String, dynamic>;
+
+                    bool isMe = messageData['senderId'] == _currentUser!.uid;
+
+                    return Align(
+                      alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+                        padding: const EdgeInsets.all(12.0),
+                        decoration: BoxDecoration(
+                          color: isMe ? const Color(0xFFDCF8C6) : Colors.grey[200],
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                        child: Text(
+                          messageData['messageText'] ?? '',
+                          style: const TextStyle(fontSize: 16.0),
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _messageController,
+                    decoration: InputDecoration(
+                      hintText: "Type a message...",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25.0),
+                        borderSide: BorderSide.none,
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey[200],
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                    ),
+                    onSubmitted: (value) => _sendMessage(),
+                  ),
+                ),
+                const SizedBox(width: 8.0),
+                FloatingActionButton(
+                  onPressed: _sendMessage,
+                  mini: true,
+                  backgroundColor: const Color(0xFF004D40),
+                  child: const Icon(Icons.send, color: Colors.white),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
 }
+
+
+
+
+
+
+
