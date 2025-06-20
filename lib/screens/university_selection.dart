@@ -1,6 +1,8 @@
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../screens/login_screen.dart';
-import '../screens/signup_screen.dart'; // Import the signup screen
+import 'signup_screen.dart';
+import 'login_screen.dart';
 
 class UniversitySelection extends StatefulWidget {
   @override
@@ -8,27 +10,53 @@ class UniversitySelection extends StatefulWidget {
 }
 
 class _UniversitySelectionState extends State<UniversitySelection> {
-  final List<String> universities = [
-    'University of Ghana',
-    'Kwame Nkrumah University of Sci & Tech',
-    'University of Cape Coast',
-    'Ashesi University',
-    'GIMPA',
-    'University for Development Studies',
-    'University of Education, Winneba',
-    'University of Professional Studies, Accra',
-    'Central University'
-  ];
-
   String? selectedUniversity;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  List<String> universities = [];
+  bool isLoading = true;
+  String? errorMessage;
+
+  // Fetch universities from Firestore with timeout and error handling
+  Future<void> fetchUniversities() async {
+    setState(() {
+      isLoading = true;
+      errorMessage = null;
+    });
+
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('universities')
+          .get()
+          .timeout(Duration(seconds: 5));
+
+      if (snapshot.docs.isEmpty) {
+        throw Exception('No universities found');
+      }
+
+      setState(() {
+        universities = snapshot.docs.map((doc) => doc.id).toList();
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        errorMessage = 'Failed to load universities. Please check your internet connection.';
+        isLoading = false;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUniversities();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // title: Text("Select Your University"),
-        backgroundColor: Color(0xFF004D40), // Teal color
+        backgroundColor: Color(0xFF004D40),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -36,7 +64,7 @@ class _UniversitySelectionState extends State<UniversitySelection> {
           child: Form(
             key: _formKey,
             child: Column(
-              mainAxisSize: MainAxisSize.min, // Keeps it centered
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // App Logo
@@ -49,38 +77,52 @@ class _UniversitySelectionState extends State<UniversitySelection> {
                 ),
                 SizedBox(height: 10),
 
-                // Dropdown Button with Validation
-                DropdownButtonFormField<String>(
-                  value: selectedUniversity,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                // Dropdown, loading, or error UI
+                if (isLoading) ...[
+                  CircularProgressIndicator(),
+                  SizedBox(height: 10),
+                  Text("Loading universities..."),
+                ] else if (errorMessage != null) ...[
+                  Icon(Icons.error, color: Colors.red),
+                  SizedBox(height: 10),
+                  Text(errorMessage!, textAlign: TextAlign.center),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: fetchUniversities,
+                    child: Text("Retry"),
                   ),
-                  items: universities.map((university) {
-                    return DropdownMenuItem(
-                      value: university,
-                      child: Text(university),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedUniversity = value;
-                    });
-                  },
-                  validator: (value) {
-                    if (value == null) {
-                      return "Please select a university";
-                    }
-                    return null;
-                  },
-                ),
+                ] else ...[
+                  DropdownButtonFormField<String>(
+                    value: selectedUniversity,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                    ),
+                    items: universities.map((university) {
+                      return DropdownMenuItem(
+                        value: university,
+                        child: Text(university),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedUniversity = value;
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null) {
+                        return "Please select a university";
+                      }
+                      return null;
+                    },
+                  ),
+                ],
 
                 SizedBox(height: 20),
 
                 // Login Link
                 GestureDetector(
                   onTap: () {
-                    // Navigate to Login Page
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => LoginScreen()),
@@ -98,22 +140,28 @@ class _UniversitySelectionState extends State<UniversitySelection> {
 
                 SizedBox(height: 30),
 
-                // Next Button
+                // Next Button (enabled only if university is selected)
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF004D40), // Teal color
+                    backgroundColor: Color(0xFF004D40),
                     padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                   ),
-                  onPressed: () {
+                  onPressed: selectedUniversity == null
+                      ? null // Disable button if no university is selected
+                      : () {
                     if (_formKey.currentState!.validate()) {
-                      // Navigate to Signup Page
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => SignupScreen()),
+                        MaterialPageRoute(
+                          builder: (context) => SignupScreen(selectedUniversity: selectedUniversity!),
+                        ),
                       );
                     }
                   },
-                  child: Text("Next", style: TextStyle(fontSize: 18, color: Colors.white)),
+                  child: Text(
+                    "Next",
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                  ),
                 ),
               ],
             ),

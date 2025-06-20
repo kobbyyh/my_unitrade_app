@@ -1,11 +1,14 @@
 
+
+import 'package:UniTrade/screens/get_help.dart';
+import 'package:UniTrade/screens/notifications.dart';
+import 'package:UniTrade/screens/platform_fees.dart';
+import 'package:UniTrade/screens/privacy_and_security.dart';
+import 'package:UniTrade/screens/profile_settings.dart';
+import 'package:UniTrade/screens/signup_seller.dart';
 import 'package:flutter/material.dart';
-import 'profile_settings.dart';
-import 'privacy_and_security.dart';
-import 'notifications.dart';
-import 'get_help.dart'; // Import GetHelpSection
-import 'platform_fees.dart';
-import 'signup_seller.dart'; // Import Seller Signup Screen
+import 'package:firebase_auth/firebase_auth.dart'; // Import Firebase Auth
+import 'university_selection.dart'; // Import University Selection screen
 
 class SettingsScreen extends StatefulWidget {
   @override
@@ -14,6 +17,41 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   bool isSeller = false; // Temporary variable to simulate seller status
+
+  // Logout method
+  Future<void> _logout(BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.signOut(); // Sign out from Firebase
+      // Navigate to the University Selection Screen (to provide security)
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => UniversitySelection()),
+            // UniversitySelectionScreen()),
+      );
+    } catch (e) {
+      // Handle errors if needed
+      _showMessage(context, 'Error during logout: ${e.toString()}');
+    }
+  }
+
+  // Method to show messages (in case of errors)
+  void _showMessage(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Notice'),
+        content: Text(message),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+            child: Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +99,34 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   },
                 ),
 
-                settingsItem(context, Icons.exit_to_app, "Logout", Colors.orange, null),
+                // 🔹 Logout Button
+                ListTile(
+                  leading: Icon(Icons.exit_to_app, color: Colors.orange),
+                  title: Text("Logout", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                  // onTap: () => _logout(context), // Call logout method here
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                        title: const Text("Confirm Logout"),
+                        content: const Text("Are you sure you want to log out?"),
+                        actions: [
+                          TextButton(
+                            child: const Text("Cancel"),
+                            onPressed: () => Navigator.pop(context),
+                          ),
+                          TextButton(
+                            child: const Text("Yes"),
+                            onPressed: () {
+                              Navigator.pop(context); // Close the dialog
+                              _logout(context); // Call the Firebase logout method
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
 
                 // Embed GetHelpSection directly
                 GetHelpSection(),
